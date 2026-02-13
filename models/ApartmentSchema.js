@@ -67,6 +67,11 @@ const ApartmentSchema = new Schema({
         enum: ["Available", "Sold", "Rented"],
         default: "Available",
     },
+    status: {
+        type: String,
+        enum: ["Active", "Inactive"],
+        default: "Inactive",
+    },
     image: {
         type: String,
         default: '',
@@ -83,6 +88,10 @@ const ApartmentSchema = new Schema({
         type: String,
         trim: true,
     },
+    proof_of_ownership: {
+        type: String,
+        default: ""
+    }
 }, {
     timestamps: true,
 });

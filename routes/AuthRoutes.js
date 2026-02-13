@@ -36,13 +36,11 @@ router.post("/register", validate(adminSchema), register);
 
 router.post(
   "/buyer-register",
-  CreateUploadMiddleware([{ name: "profilePicture", isMultiple: false }]),
   handleRegisterBuyer
 );
 
 router.post(
   "/seller-register",
-  CreateUploadMiddleware([{ name: "profilePicture", isMultiple: false }]),
   handleRegisterSeller
 );
 
@@ -65,7 +63,6 @@ router.patch("/change-password", changePassword);
 router.get("/get-profile/:id", handleGetUserProfile);
 
 router.patch("/update-user/:id",
-  CreateUploadMiddleware([{ name: "medicareFile", isMultiple: false }, { name: "profilePicture", isMultiple: false }]),
   HandleUpdateProfile);
 
 router.get("/get-buyers", handleGetBuyers);

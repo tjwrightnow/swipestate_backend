@@ -1,18 +1,19 @@
-import express from "express"
-import { handleAddApartment, handleGetApartment, handleGetSellerApartments, handleGetSellerSingleApartment } from "../controllers/ApartmentController.js";
+import express from "express";
+import { handleAddApartment, handleGetAllApartments, handleGetApartment, handleGetSellerApartments, handleGetSellerSingleApartment, handleUpdateApartment } from "../controllers/ApartmentController.js";
 import { CreateUploadMiddleware } from "../middlewares/MulterMiddleware.js";
-
 
 const router = express.Router();
 
+router.post("/create-apartment/:sellerId", handleAddApartment);
 
-router.post("/create-seller/:sellerId", CreateUploadMiddleware([{ name: "image", isMultiple: false }, { name: "featuredImages", isMultiple: true }]), handleAddApartment)
+router.patch("/:sellerId/update-property/:propertyId", handleUpdateApartment);
 
+router.get("/:buyerId/property-listing", handleGetApartment);
 
-router.get("/:buyerId/property-listing", handleGetApartment)
+router.get("/:sellerId/seller-property-listing", handleGetSellerApartments);
 
-router.get("/:sellerId/seller-property-listing", handleGetSellerApartments)
+router.get("/property-listing", handleGetAllApartments);
 
-router.get("/:sellerId/seller-property/:propertyId", handleGetSellerSingleApartment)
+router.get("/:sellerId/seller-property/:propertyId", handleGetSellerSingleApartment);
 
 export default router;

@@ -16,6 +16,7 @@ import SearchQuery from "../utils/SearchQuery.js";
 import ExtractRelativeFilePath from "../middlewares/ExtractRelativePath.js";
 import expressAsyncHandler from "express-async-handler";
 import SellerModel from "../models/SellerSchema.js";
+import { v2 as cloudinary } from "cloudinary";
 
 // REGISTER
 // METHOD : POST
@@ -87,7 +88,7 @@ const handleRegisterBuyer = async (req, res, next) => {
       deviceName,
     } = req.body;
 
-    const profilePicture = req?.files?.profilePicture?.[0];
+    const profilePicture = req?.files?.profilePicture;
 
     if (!profilePicture) {
       return res
@@ -95,7 +96,12 @@ const handleRegisterBuyer = async (req, res, next) => {
         .json({ message: "profile picture File is required!" });
     }
 
-    const extractPath = ExtractRelativeFilePath(profilePicture);
+    const extractPath = req?.files?.profilePicture;
+    const uploadResult = extractPath ? await cloudinary.uploader.upload(extractPath.tempFilePath, {
+      resource_type: 'image',
+    }) : '';
+
+    // const extractPath = ExtractRelativeFilePath(profilePicture);
 
     const existingBuyer =
       (await AdminModel.findOne({
@@ -123,7 +129,7 @@ const handleRegisterBuyer = async (req, res, next) => {
       address,
       selectedIncome,
       creditScore,
-      profilePicture: extractPath,
+      profilePicture: uploadResult.secure_url,
       password: hashedPassword,
     });
     await newBuyer.save();
@@ -208,7 +214,7 @@ const handleRegisterSeller = async (req, res, next) => {
       deviceName,
     } = req.body;
 
-    const profilePicture = req?.files?.profilePicture?.[0];
+    const profilePicture = req?.files?.profilePicture;
 
     if (!profilePicture) {
       return res
@@ -216,8 +222,11 @@ const handleRegisterSeller = async (req, res, next) => {
         .json({ message: "profile picture File is required!" });
     }
 
-    const extractPath = ExtractRelativeFilePath(profilePicture);
-
+    // const extractPath = ExtractRelativeFilePath(profilePicture);
+    const extractPath = req?.files?.profilePicture;
+    const uploadResult = extractPath ? await cloudinary.uploader.upload(extractPath.tempFilePath, {
+      resource_type: 'image',
+    }) : '';
     const existingSeller =
       (await AdminModel.findOne({
         $or: [{ username: name }, { email }],
@@ -242,7 +251,7 @@ const handleRegisterSeller = async (req, res, next) => {
       email,
       phone,
       address,
-      profilePicture: extractPath,
+      profilePicture: uploadResult.secure_url,
       password: hashedPassword,
     });
     await newSeller.save();
@@ -731,7 +740,7 @@ const HandleUpdateProfile = async (req, res, next) => {
       const selectedIncome = clean(req.body.selectedIncome);
       const creditScore = clean(req.body.creditScore);
 
-      const profilePicture = req?.files?.profilePicture?.[0];
+      const profilePicture = req?.files?.profilePicture;
 
       // build $or ONLY if values exist
       const userOrConditions = [];
@@ -768,7 +777,11 @@ const HandleUpdateProfile = async (req, res, next) => {
 
       // file updates
       if (profilePicture) {
-        user.profilePicture = ExtractRelativeFilePath(profilePicture);
+        const extractPath = req?.files?.profilePicture;
+        const uploadResult = extractPath ? await cloudinary.uploader.upload(extractPath.tempFilePath, {
+          resource_type: 'image',
+        }) : '';
+        user.profilePicture = uploadResult.secure_url;
       }
 
       // field updates
@@ -831,7 +844,7 @@ const HandleUpdateProfile = async (req, res, next) => {
       const address = clean(req.body.address);
       const password = clean(req.body.password);
 
-      const profilePicture = req?.files?.profilePicture?.[0];
+      const profilePicture = req?.files?.profilePicture;
 
       // build $or ONLY if values exist
       const userOrConditions = [];
@@ -866,7 +879,11 @@ const HandleUpdateProfile = async (req, res, next) => {
 
       // file updates
       if (profilePicture) {
-        user.profilePicture = ExtractRelativeFilePath(profilePicture);
+        const extractPath = req?.files?.profilePicture;
+        const uploadResult = extractPath ? await cloudinary.uploader.upload(extractPath.tempFilePath, {
+          resource_type: 'image',
+        }) : '';
+        user.profilePicture = uploadResult.secure_url;
       }
 
       // field updates

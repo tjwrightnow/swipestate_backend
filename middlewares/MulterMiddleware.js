@@ -41,44 +41,6 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Factory middleware for dynamic field
-// const CreateUploadMiddleware = (fields) => {
-//   const upload = multer({
-//     storage,
-//     limits: {
-//       fileSize: MAX_SIZE,
-//       files: 5, // total max files across all fields
-//     },
-//     fileFilter,
-//   });
-
-//   // Convert to multer's expected format for `upload.fields()`
-//   const formattedFields = fields.map((field) => ({
-//     name: field.name,
-//     maxCount: field.isMultiple ? 5 : 1,
-//   }));
-
-//   const handler = upload.fields(formattedFields);
-
-//   return (req, res, next) => {
-//     handler(req, res, (err) => {
-//       if (err instanceof multer.MulterError) {
-//         if (err.code === "LIMIT_FILE_SIZE") {
-//           return res
-//             .status(400)
-//             .json({ error: "File too large. Max size is 10MB." });
-//         }
-//         if (err.code === "LIMIT_UNEXPECTED_FILE") {
-//           return res.status(400).json({ error: "Too many files uploaded." });
-//         }
-//         return res.status(400).json({ error: err.message });
-//       } else if (err) {
-//         return res.status(400).json({ error: err.message });
-//       }
-//       next();
-//     });
-//   };
-// };
 
 const CreateUploadMiddleware = (fields) => {
   // Map field configs so we can check later
